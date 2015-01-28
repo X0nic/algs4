@@ -1,3 +1,12 @@
+/**
+ *  The <tt>Percolation</tt> class represents a grid data structure.
+ *  The grid has open and closed site, and can by used to represent flow
+ *  through a material.
+ *  <p>
+ *
+ *  @author Nathan Lee
+ *  */
+
 public class Percolation {
   private static final int VIRTUAL_TOP = 0;
   private static final int VIRTUAL_BOTTOM = 1;

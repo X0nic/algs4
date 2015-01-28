@@ -1,3 +1,11 @@
+/**
+ *  The <tt>PercolationStats</tt> class is used to calculate the typical
+ *  percolation threshold for an NxN grid.
+ *  <p>
+ *
+ *  @author Nathan Lee
+ *  */
+
 public class PercolationStats {
   private double[] experiments;
   private int experimentCount;
