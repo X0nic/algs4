@@ -8,78 +8,100 @@ public class Percolation {
 
   public Percolation(int N)               // create N-by-N grid, with all sites blocked
   {
+    if (N < 1) throw new IllegalArgumentException("Grid needs to be at least 1x1");
+
     grid = new boolean[N*N+2];
     gridSize = N;
     quickUnion = new WeightedQuickUnionUF(N*N+2);
-
-    // StdOut.println(grid.length);
   }
 
   public void open(int i, int j)          // open site (row i, column j) if it is not open already
   {
+    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
+    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
+
     if (isOpen(i,j) == false)
     {
       grid[xyTo1D(i,j)] = true;
 
-      if (isOpen(i-1,j))
-      {
-        // StdOut.println("Union Top: " + i + " " + j);
-        quickUnion.union(xyTo1D(i,j), xyTo1D(i-1,j));
-      }
-      if (isOpen(i+1,j))
-      {
-        // StdOut.println("Union Bottom: " + i + " " + j);
-        quickUnion.union(xyTo1D(i,j), xyTo1D(i+1,j));
-      }
-      if (isOpen(i,j-1))
-      {
-        // StdOut.println("Union Left: " + i + " " + j);
-        quickUnion.union(xyTo1D(i,j), xyTo1D(i,j-1));
-      }
-      if (isOpen(i,j+1))
-      {
-        // StdOut.println("Union Right: " + i + " " + j);
-        quickUnion.union(xyTo1D(i,j), xyTo1D(i,j+1));
-      }
+      unionTop(i,j);
+      unionBottom(i,j);
+      unionLeft(i,j);
+      unionRight(i,j);
 
+      unionVirtualTop(i,j);
+      unionVirtualBottom(i,j);
+    }
+  }
+
+  private void unionTop(int i, int j)
+  {
+    unionIfNeeded(i, j, i-1, j);
+  }
+
+  private void unionBottom(int i, int j)
+  {
+    unionIfNeeded(i, j, i+1, j);
+  }
+
+  private void unionLeft(int i, int j)
+  {
+    unionIfNeeded(i, j, i, j-1);
+  }
+
+  private void unionRight(int i, int j)
+  {
+    unionIfNeeded(i, j, i, j+1);
+  }
+
+  private void unionVirtualTop(int i, int j)
+  {
       if (i==1)
       {
         // StdOut.println("Connect to top: " + i + " " + j);
         quickUnion.union(VIRTUAL_TOP, xyTo1D(i,j));
       }
+  }
 
+  private void unionVirtualBottom(int i, int j)
+  {
       if (i==gridSize)
       {
         // StdOut.println("Connect to bottom: " + i + " " + j);
         quickUnion.union(VIRTUAL_BOTTOM, xyTo1D(i,j));
       }
+  }
+
+  private void unionIfNeeded(int firstCellRow, int firstCellColumn, 
+                             int secondCellRow, int secondCellColumn)
+  {
+    if (secondCellRow<1 || secondCellColumn<1) return;
+    if (secondCellRow>gridSize || secondCellColumn>gridSize) return;
+
+    if (isOpen(secondCellRow, secondCellColumn))
+    {
+      quickUnion.union(xyTo1D(firstCellRow, firstCellColumn), xyTo1D(secondCellRow, secondCellColumn));
     }
   }
 
   public boolean isOpen(int i, int j)     // is site (row i, column j) open?
   {
-    if (i<1 || j<1)
-      return false;
-
-    if (i>gridSize || j>gridSize)
-      return false;
+    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
+    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
 
     return grid[xyTo1D(i,j)];
   }
 
   public boolean isFull(int i, int j)     // is site (row i, column j) full?
   {
-    // return false;
+    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
+    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
 
-    // return quickUnion.connected(xyTo1D(1,1), xyTo1D(i,j)) && isOpen(i,j);
     return quickUnion.connected(0, xyTo1D(i,j)) && isOpen(i,j);
   }
 
   public boolean percolates()             // does the system percolate?
   {
-    // if ( quickUnion.connected(VIRTUAL_TOP, VIRTUAL_BOTTOM) )
-    //   StdOut.println("Purcolated");
-
     return quickUnion.connected(VIRTUAL_TOP, VIRTUAL_BOTTOM);
   }
 

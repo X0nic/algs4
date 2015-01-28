@@ -6,6 +6,12 @@ public class PercolationStats {
 
   public PercolationStats(int N, int T)     // perform T independent experiments on an N-by-N grid
   {
+    if (N < 1)
+      throw new IllegalArgumentException("Grid needs to be at least 1x1");
+
+    if (T < 1)
+      throw new IllegalArgumentException("Need to perform at least 1 experiment");
+
     experimentCount = T;
     experiments = new double[experimentCount];
     experimentSum = 0;
