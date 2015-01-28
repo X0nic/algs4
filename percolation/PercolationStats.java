@@ -44,6 +44,9 @@ public class PercolationStats {
   // sample standard deviation of percolation threshold
   public double stddev()
   {
+    if (gridSize <= 1)
+      return Double.NaN;
+
     if (experimentCount < 1)
       return 0;
 
