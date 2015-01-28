@@ -4,7 +4,8 @@ public class PercolationStats {
   private double experimentSum;
   private int gridSize;
 
-  public PercolationStats(int N, int T)     // perform T independent experiments on an N-by-N grid
+  // perform T independent experiments on an N-by-N grid
+  public PercolationStats(int N, int T)
   {
     if (N < 1)
       throw new IllegalArgumentException("Grid needs to be at least 1x1");
@@ -17,13 +18,14 @@ public class PercolationStats {
     experimentSum = 0;
     gridSize = N;
 
-    for(int i=0; i<experimentCount; i++)
+    for (int i = 0; i < experimentCount; i++)
     {
       addExperimentResults(i, runExperiment());
     }
   }
 
-  public double mean()                      // sample mean of percolation threshold
+  // sample mean of percolation threshold
+  public double mean()
   {
     if (experimentCount < 1)
       return 0;
@@ -31,27 +33,30 @@ public class PercolationStats {
     return experimentSum / experimentCount;
   }
 
-  public double stddev()                    // sample standard deviation of percolation threshold
+  // sample standard deviation of percolation threshold
+  public double stddev()
   {
     if (experimentCount < 1)
       return 0;
 
     double totalDeviation = 0;
-    for(int i=0; i<experimentCount; i++)
+    for (int i = 0; i < experimentCount; i++)
     {
       double deviation = experiments[i] - mean();
       totalDeviation += deviation * deviation;
     }
 
-    return Math.sqrt( totalDeviation / experimentCount );
+    return Math.sqrt(totalDeviation / experimentCount);
   }
 
-  public double confidenceLo()              // low  endpoint of 95% confidence interval
+  // low  endpoint of 95% confidence interval
+  public double confidenceLo()
   {
     return mean() - (1.96 * stddev()) / Math.sqrt(experimentCount);
   }
 
-  public double confidenceHi()              // high endpoint of 95% confidence interval
+  // high endpoint of 95% confidence interval
+  public double confidenceHi()
   {
     return mean() + (1.96 * stddev()) / Math.sqrt(experimentCount);
   }
@@ -67,12 +72,12 @@ public class PercolationStats {
     Percolation perc = new Percolation(gridSize);
 
     int count = 0;
-    while(! perc.percolates())
+    while (!perc.percolates())
     {
       int x = StdRandom.uniform(gridSize)+1;
       int y = StdRandom.uniform(gridSize)+1;
 
-      if (perc.isOpen(x,y) == false) 
+      if (!perc.isOpen(x, y))
       {
         perc.open(x, y);
         count++;
@@ -93,9 +98,10 @@ public class PercolationStats {
 
     PercolationStats stats = new PercolationStats(N, T);
 
-    StdOut.println("mean                    = " + stats.mean() );
-    StdOut.println("stddev                  = " + stats.stddev() );
-    StdOut.println("95% confidence interval = " + stats.confidenceLo() + ", " + stats.confidenceHi() );
+    StdOut.println("mean                    = " + stats.mean());
+    StdOut.println("stddev                  = " + stats.stddev());
+    StdOut.println("95% confidence interval = " + stats.confidenceLo()
+                                         + ", " + stats.confidenceHi());
   }
 
 }

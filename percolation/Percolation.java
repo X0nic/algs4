@@ -1,36 +1,42 @@
 public class Percolation {
+  private static final int VIRTUAL_TOP = 0;
+  private static final int VIRTUAL_BOTTOM = 1;
+
   private boolean[] grid;
   private int gridSize;
   private WeightedQuickUnionUF quickUnion;
 
-  private static final int VIRTUAL_TOP = 0;
-  private static final int VIRTUAL_BOTTOM = 1;
-
-  public Percolation(int N)               // create N-by-N grid, with all sites blocked
+  // create N-by-N grid, with all sites blocked
+  public Percolation(int N)
   {
-    if (N < 1) throw new IllegalArgumentException("Grid needs to be at least 1x1");
+    if (N < 1) 
+      throw new IllegalArgumentException("Grid needs to be at least 1x1");
 
     grid = new boolean[N*N+2];
     gridSize = N;
     quickUnion = new WeightedQuickUnionUF(N*N+2);
   }
 
-  public void open(int i, int j)          // open site (row i, column j) if it is not open already
+  // open site (row i, column j) if it is not open already
+  public void open(int i, int j)
   {
-    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
-    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
+    if (i <= 0 || i > gridSize) 
+      throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
 
-    if (isOpen(i,j) == false)
+    if (j <= 0 || j > gridSize) 
+      throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
+
+    if (!isOpen(i, j))
     {
-      grid[xyTo1D(i,j)] = true;
+      grid[xyTo1D(i, j)] = true;
 
-      unionTop(i,j);
-      unionBottom(i,j);
-      unionLeft(i,j);
-      unionRight(i,j);
+      unionTop(i, j);
+      unionBottom(i, j);
+      unionLeft(i, j);
+      unionRight(i, j);
 
-      unionVirtualTop(i,j);
-      unionVirtualBottom(i,j);
+      unionVirtualTop(i, j);
+      unionVirtualBottom(i, j);
     }
   }
 
@@ -56,48 +62,51 @@ public class Percolation {
 
   private void unionVirtualTop(int i, int j)
   {
-      if (i==1)
+      if (i == 1)
       {
-        // StdOut.println("Connect to top: " + i + " " + j);
-        quickUnion.union(VIRTUAL_TOP, xyTo1D(i,j));
+        quickUnion.union(VIRTUAL_TOP, xyTo1D(i, j));
       }
   }
 
   private void unionVirtualBottom(int i, int j)
   {
-      if (i==gridSize)
+      if (i == gridSize)
       {
-        // StdOut.println("Connect to bottom: " + i + " " + j);
-        quickUnion.union(VIRTUAL_BOTTOM, xyTo1D(i,j));
+        quickUnion.union(VIRTUAL_BOTTOM, xyTo1D(i, j));
       }
   }
 
-  private void unionIfNeeded(int firstCellRow, int firstCellColumn, 
+  private void unionIfNeeded(int firstCellRow, int firstCellColumn,
                              int secondCellRow, int secondCellColumn)
   {
-    if (secondCellRow<1 || secondCellColumn<1) return;
-    if (secondCellRow>gridSize || secondCellColumn>gridSize) return;
+    if (secondCellRow < 1 || secondCellColumn < 1) return;
+    if (secondCellRow > gridSize || secondCellColumn > gridSize) return;
 
     if (isOpen(secondCellRow, secondCellColumn))
     {
-      quickUnion.union(xyTo1D(firstCellRow, firstCellColumn), xyTo1D(secondCellRow, secondCellColumn));
+      quickUnion.union(xyTo1D(firstCellRow, firstCellColumn),
+                       xyTo1D(secondCellRow, secondCellColumn));
     }
   }
 
   public boolean isOpen(int i, int j)     // is site (row i, column j) open?
   {
-    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
-    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
+    if (i <= 0 || i > gridSize)
+      throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
+    if (j <= 0 || j > gridSize)
+      throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
 
-    return grid[xyTo1D(i,j)];
+    return grid[xyTo1D(i, j)];
   }
 
   public boolean isFull(int i, int j)     // is site (row i, column j) full?
   {
-    if (i <= 0 || i > gridSize) throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
-    if (j <= 0 || j > gridSize) throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
+    if (i <= 0 || i > gridSize)
+      throw new IndexOutOfBoundsException("row index " + i + " out of bounds");
+    if (j <= 0 || j > gridSize)
+      throw new IndexOutOfBoundsException("column index " + j + " out of bounds");
 
-    return quickUnion.connected(0, xyTo1D(i,j)) && isOpen(i,j);
+    return quickUnion.connected(0, xyTo1D(i, j)) && isOpen(i, j);
   }
 
   public boolean percolates()             // does the system percolate?
