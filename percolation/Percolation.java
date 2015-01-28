@@ -14,7 +14,7 @@ public class Percolation {
 
     // StdOut.println(grid.length);
   }
-  
+
   public void open(int i, int j)          // open site (row i, column j) if it is not open already
   {
     if (isOpen(i,j) == false)
@@ -55,7 +55,7 @@ public class Percolation {
       }
     }
   }
-  
+
   public boolean isOpen(int i, int j)     // is site (row i, column j) open?
   {
     if (i<1 || j<1)
@@ -66,7 +66,7 @@ public class Percolation {
 
     return grid[xyTo1D(i,j)];
   }
-  
+
   public boolean isFull(int i, int j)     // is site (row i, column j) full?
   {
     // return false;
@@ -74,17 +74,14 @@ public class Percolation {
     // return quickUnion.connected(xyTo1D(1,1), xyTo1D(i,j)) && isOpen(i,j);
     return quickUnion.connected(0, xyTo1D(i,j)) && isOpen(i,j);
   }
-  
+
   public boolean percolates()             // does the system percolate?
   {
     // if ( quickUnion.connected(VIRTUAL_TOP, VIRTUAL_BOTTOM) )
     //   StdOut.println("Purcolated");
-    
-    // return false if 
 
     return quickUnion.connected(VIRTUAL_TOP, VIRTUAL_BOTTOM);
   }
-  
 
   public static void main(String[] args)   // test client (optional)
   {
@@ -98,8 +95,6 @@ public class Percolation {
     int coords = y * gridSize + x;
 
     coords += 2; // Add room for virtual points.
-
-    // StdOut.println( x + " " + y + " = " + coords);
 
     return coords;
   }
